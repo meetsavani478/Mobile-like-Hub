@@ -1,0 +1,138 @@
+.OTP_body {
+    border-radius: 30%;
+    display: grid;
+    place-items: center;
+    width: 150vh;
+    height: 100vh;
+    animation: slideInRight_2 2s ease forwards;
+}
+
+.OTP_body .OTP_form {
+    width: 60%;
+    height: 60%;
+    border-radius: 70%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.OTP_body .OTP_form .OTP_main {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+
+.OTP_body .OTP_form .OTP_main .OTP_input {
+    font-size: 1.2rem;
+    padding-left: 0.5rem;
+    background-color: #c0d1eb;
+    width: 15rem;
+    height: 2rem;
+    font-family: 'Times New Roman', Times, serif;
+    font-weight: 500;
+    border-radius: 0.5rem;
+    -webkit-border-radius: 0.5rem;
+    -moz-border-radius: 0.5rem;
+    -ms-border-radius: 0.5rem;
+    -o-border-radius: 0.5rem;
+}
+
+.OTP_body .OTP_form .OTP_main i {
+    font-size: 1.5rem;
+}
+
+.OTP_body .OTP_form .OTP_h3 {
+    text-align: center;
+}
+
+.OTP_body .OTP_form .OTP_button {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
+    border-radius: 1.5rem;
+    width: 5rem;
+    height: 2rem;
+    border: none;
+    -webkit-border-radius: 1.5rem;
+    -moz-border-radius: 1.5rem;
+    -ms-border-radius: 1.5rem;
+    -o-border-radius: 1.5rem;
+}
+
+@keyframes slideInRight_2 {
+    0% {
+        transform: translateX(-100px);
+        opacity: 0;
+        -webkit-transform: translateX(-100px);
+        -moz-transform: translateX(-100px);
+        -ms-transform: translateX(-100px);
+        -o-transform: translateX(-100px);
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .OTP_body {
+        width: 100vh;
+        height: 80vh;
+        gap: 1rem;
+    }
+    .OTP_body .OTP_form {
+        width: 80%;
+        height: auto;
+        border-radius: 20%;
+        padding: 1rem;
+        -webkit-border-radius: 20%;
+        -moz-border-radius: 20%;
+        -ms-border-radius: 20%;
+        -o-border-radius: 20%;
+}
+    .OTP_body .OTP_form .OTP_main {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .OTP_body .OTP_form .OTP_main .OTP_input {
+        width: 80%;
+    }
+    .OTP_body .OTP_form .OTP_button {
+        margin-left: 0;
+        width: 30%;
+        height: 2rem;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .OTP_body {
+        width: auto;
+        height: 70vh;
+    }
+    .OTP_body .OTP_form {
+        width: auto;
+        height: auto;
+        border-radius: 10%;
+        padding: 1rem;
+        -webkit-border-radius: 10%;
+        -moz-border-radius: 10%;
+        -ms-border-radius: 10%;
+        -o-border-radius: 10%;
+}
+    .OTP_body .OTP_form .OTP_main {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .OTP_body .OTP_form .OTP_main .OTP_input {
+        width: auto;
+    }
+    .OTP_body .OTP_form .OTP_button {
+        margin-left: 0;
+        width: 40%;
+        height: 2rem;
+    }
+}

@@ -1,0 +1,211 @@
+.Slides-iphone-main {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    background-color: white;
+    padding: 2.3rem;
+    padding-top: 6rem;
+    gap: 2rem;
+}
+
+@media (max-width: 1200px) {
+    .Slides-iphone-main {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 850px) {
+    .Slides-iphone-main {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 428px) {
+    .Slides-iphone-main {
+        grid-template-columns: 1fr;
+    }
+}
+
+.Slide-Loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    gap: 5rem;
+}
+
+.Slide-Loading img {
+    width: 120px;
+  object-fit: cover;
+    height: 150px;
+}
+.product-item {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    padding: 1.2rem;
+    border-radius: 0.5rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.product-item:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.product-img {
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    padding: 1rem;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+}
+
+.product-img img {
+  object-fit: cover;
+    width: 75%;
+    height: auto;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.product-img:hover img {
+    opacity: 0.5;
+  object-fit: cover;
+
+    transform: scale(1.1);
+}
+
+.product-action {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product-img:hover .product-action {
+    opacity: 1;
+}
+
+.product-action a {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    text-decoration: none;
+    color: #343a40;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 1rem;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.product-action a:hover {
+    color: #fff;
+    background-color: #343a40;
+}
+
+.text-center {
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.text-center a {
+    display: block;
+    font-size: 1rem;
+    color: #343a40;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.text-center a:hover {
+    color: #ff6347;
+}
+
+.text-center .d-flex {
+    margin-top: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.text-center .d-flex h5 {
+    margin-right: 0.5rem;
+    font-weight: 700;
+}
+
+.text-center .d-flex h6 {
+    margin-left: 0.5rem;
+    color: #6c757d;
+    text-decoration: line-through;
+}
+
+.text-center .fa-star {
+    color: #ffc107;
+}
+
+.text-center .fa-star-half-alt {
+    color: #ffc107;
+}
+
+.text-center .far.fa-star {
+    color: #e4e5e9;
+}
+
+.text-center small {
+    color: #6c757d;
+    margin-left: 0.5rem;
+}
+
+.btn-square {
+    position: relative;
+    display: inline-block;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin: 0.2rem;
+    text-align: center;
+    border: 1px solid #ccc;
+    transition: all 0.3s ease;
+}
+
+.btn-square i {
+    line-height: 2.5rem;
+    font-size: 1.2rem;
+    color: black;
+}
+
+.btn-square:hover i {
+    color: white;
+}
+
+.btn-square.liked i {
+    color: red;
+    animation: like-animation 0.3s ease;
+}
+
+@keyframes like-animation {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}

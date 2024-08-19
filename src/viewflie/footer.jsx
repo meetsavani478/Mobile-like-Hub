@@ -13,7 +13,7 @@ const Footer = (props) => {
     const fetchData = async () => {
       if (id) {
         try {
-          const response = await fetch(`http://localhost:4000/user/${id}`);
+          const response = await fetch(`https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/user/${id}`);
           const apiData = await response.json();
           setIsLoggedIn(true);
         } catch (error) {
@@ -54,7 +54,7 @@ const Footer = (props) => {
     try {
       const { name, email, subject, message } = formData;
       const response = await Axios.post(
-        "http://localhost:4000/mycontact",
+        "https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/mycontact",
         {
           name,
           email,

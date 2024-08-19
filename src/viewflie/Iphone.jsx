@@ -16,7 +16,7 @@ const Iphone = () => {
 
     const fetchIphoneData = async () => {
         try {
-            const response = await Axios.get(`http://localhost:4000/Phone_Detail/${name}/${id}`);
+            const response = await Axios.get(`https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/Phone_Detail/${name}/${id}`);
             setData(response.data);
             
             setLoading(false);

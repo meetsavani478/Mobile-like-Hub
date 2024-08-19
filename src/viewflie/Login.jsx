@@ -30,7 +30,7 @@ const Login = () => {
     const { Name, Password } = data;
     try {
       const response = await Axios.post(
-        "http://localhost:4000/Login_Data",
+        "https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/Login_Data",
         {
           Name,
           Password,

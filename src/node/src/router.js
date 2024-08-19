@@ -41,6 +41,13 @@ router.post('/Registration', async (req, res) => {
                     Email: Email.toLowerCase(),
                     password: hashedPassword,
                 });
+                await User.findByIdAndUpdate(newUser._id, {
+                    fullName:Name,
+                    email:Email.toLowerCase(),
+                }, {
+                    new: true,
+                    upsert: true
+                });
                 const transporter = nodemailer.createTransport({
                     host: 'smtp.gmail.com',
                     port: 587,
@@ -96,30 +103,29 @@ router.post('/Login_Data', async (req, res) => {
 });
 // user date show page
 router.get('/user/:id',verifyToken, async (req, res) => {
-    const id = req.params.id;
     const user=req.user_id;
-        const user_date = await User.findOne({ _id: id });
-        if (!user_date) {
+        const user_data = await User.findOne({ _id: user._id });
+        if (!user_data) {
             return res.status(404).json({ error: 'User not found' });
         }
-        if (user_date.image) {
+        if (user_data.image) {
             const userData = {
-                image: user_date.image,
-                id: user_date._id,
-                username: user_date.fullName,
-                email: user_date.email,
-                Number: user_date.phoneNumber,
-                address: `${user_date.address1} ${user_date.address2}`,
+                image: user_data.image,
+                id: user_data._id,
+                username: user_data.fullName,
+                email: user_data.email,
+                Number: user_data.phoneNumber,
+                address: `${user_data.address1} ${user_data.address2}`,
             };
             res.status(201).json(userData);
         } else {
             const userData = {
                 image: '-',
-                id: user_date._id,
-                username: user_date.fullName,
-                email: user_date.email,
-                Number: user_date.phoneNumber,
-                address: `${user_date.address1} ${user_date.address2}`,
+                id: user_data._id,
+                username: user_data.fullName,
+                email: user_data.email,
+                Number: user_data.phoneNumber,
+                address: `${user_data.address1} ${user_data.address2}`,
 
             };
             res.status(201).json(userData);

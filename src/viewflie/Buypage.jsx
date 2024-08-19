@@ -40,7 +40,7 @@ const CheckoutForm = () => {
     const fetchUserData = async () => {
       try {
         if (id) {
-          const response = await Axios.get(`http://localhost:4000/users/${id}`);
+          const response = await Axios.get(`https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/users/${id}`);
           if (response.data) {
             setUserData(response.data);
           }
@@ -58,7 +58,7 @@ const CheckoutForm = () => {
     setLoading(true);
 
     try {
-      await Axios.post(`http://localhost:4000/users/${id}`, userData);
+      await Axios.post(`https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/users/${id}`, userData);
       if(num==1)
       {
         navigate('/User'); 

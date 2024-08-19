@@ -19,7 +19,7 @@ const OTP =()=>{
    
         const {OTP}=Data;
         try{
-        const Send = await Axios.post('http://localhost:4000/NEW_PASSWORD',{
+        const Send = await Axios.post('https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/NEW_PASSWORD',{
             OTP},{
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/static/css/main.df87ef84.css",
+    "main.js": "/static/js/main.bfaf6d16.js",
+    "static/media/Mesa_de_trabajo_1-100-removebg-preview.png": "/static/media/Mesa_de_trabajo_1-100-removebg-preview.e2ef2fae4acdf4f861e7.png",
+    "static/media/Animation - 1721482685274 (1).gif": "/static/media/Animation - 1721482685274 (1).8b7dc822b85680916597.gif",
+    "static/media/Animation - 1720176291108.gif": "/static/media/Animation - 1720176291108.43cc4263de3c8ab6cadb.gif",
+    "index.html": "/index.html",
+    "main.df87ef84.css.map": "/static/css/main.df87ef84.css.map",
+    "main.bfaf6d16.js.map": "/static/js/main.bfaf6d16.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.df87ef84.css",
+    "static/js/main.bfaf6d16.js"
+  ]
+}

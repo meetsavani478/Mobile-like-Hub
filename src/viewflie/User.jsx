@@ -10,7 +10,7 @@ const User = () => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const imageBaseUrl = 'http://localhost:4000/';
+    const imageBaseUrl = 'https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/';
     const navigate = useNavigate();
     const id = localStorage.getItem('userId');
 
@@ -20,18 +20,21 @@ const User = () => {
     const fetchData = async () => {
         try {
             axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-            const response = await axios.get(`http://localhost:4000/user/${id}`);
+            const response = await axios.get(`https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/user/${id}`);
             const apiData = response.data;
             if (apiData) {
                 setData(apiData);
                 setLoading(false);
+                
             } else {
                 navigate('/Login');
+                localStorage.removeItem('token');
                 window.alert('Click on web login');
             }
         } catch (error) {
             navigate('/Login');
             setError(error);
+            localStorage.removeItem('token');
             window.alert(`Click on web login ${error}`);
         }
     };
@@ -81,7 +84,7 @@ const User = () => {
         formData.append('profileImage', profileImage);
 
         try {
-            const response = await axios.post(`http://localhost:4000/file_upload/${id}`, formData, {
+            const response = await axios.post(`https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/file_upload/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }
@@ -92,11 +95,13 @@ const User = () => {
                 navigate(`/Project/${id}`);
             } else {
                 navigate('/Login');
+                localStorage.removeItem('token');
                 window.alert(apiData.error);
             }
         } catch (error) {
             console.log('Error uploading image:', error?.response?.data?.error);
             navigate('/Login');
+            localStorage.removeItem('token');
             window.alert(error?.response?.data?.error);
         }
 
@@ -115,8 +120,8 @@ const User = () => {
                         <img src={imageBaseUrl + data.image} alt="User" />
                     </div>
                     <div className="User_M_1">
-                        {/* <i className="fa-solid fa-id-card-clip"></i> */}
-                        {/* <h3>{data.id}</h3> */}
+                        <i className="fa-solid fa-id-card-clip"></i>
+                        <h3>{data.id}</h3>
                     </div>
                     <div className="User_M_1">
                         <i className="fa-regular fa-id-badge"></i>

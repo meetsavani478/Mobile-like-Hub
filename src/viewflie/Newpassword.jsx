@@ -39,7 +39,7 @@ const Npassword =()=>{
             window.alert(error.response.data.error);
         }
     }
-    return(<>
+    return(<div className='center_pass'>
     <form onSubmit={Submit} method="post" className='N_form'>
         <h3 className='N_h3'>ENTER YOUR PASSWORD </h3>
         <div className="N_main">
@@ -54,7 +54,7 @@ const Npassword =()=>{
         <br/>
         <button className='N_button' id="fun1" type="submit">Submit </button>
     </form>
-    </>);
+    </div>);
 }
 
 export default Npassword

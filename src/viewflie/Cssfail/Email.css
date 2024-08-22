@@ -8,8 +8,19 @@
 
 .Email_form {
     display: grid;
+    place-items: center;
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
     gap: 0.5rem;
+    width: 60vh;
+    height: 38vh;
+    padding: 2rem;
+    border-radius: 2rem;
     animation: slideInRight_1 1s ease forwards;
+    -webkit-border-radius: 2rem;
+    -moz-border-radius: 2rem;
+    -ms-border-radius: 2rem;
+    -o-border-radius: 2rem;
+    -webkit-animation: slideInRight_1 1s ease forwards;
 }
 
 .Email_form .Email_main {
@@ -23,7 +34,7 @@
 .Email_form .Email_main .Email_input {
     font-size: 1.2rem;
     padding-left: 0.5rem;
-    background-color: #c0d1eb;
+    /* background-color: #c0d1eb; */
     width: 15rem;
     height: 2.5rem;
     font-family: 'Times New Roman', Times, serif;
@@ -45,10 +56,14 @@
 
 .Email_form .Email_button {
     margin-left: 7.5rem;
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px, rgba(0, 0, 0, 0.3) 0px 30px 60px -30px, rgba(10, 37, 64, 0.35) 0px -2px 6px 0px inset;
-    border-radius: 1.5rem;
     width: 5rem;
     height: 2rem;
+    border: none;
+    background-color: #c0d1eb;
+    -webkit-border-radius: 1.5rem;
+    -moz-border-radius: 1.5rem;
+    -ms-border-radius: 1.5rem;
+    -o-border-radius: 1.5rem;
 }
 
 @keyframes slideInRight_1 {

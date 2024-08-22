@@ -51,7 +51,7 @@ const Email = () => {
     };
 
     return (
-        <>
+        <div className='center-pass'>
             <form onSubmit={Submit} method="post" className='Email_form'>
                 <h3 className='Email_h3'>Enter The mail id please </h3>
                 <div className="Email_main">
@@ -67,7 +67,7 @@ const Email = () => {
                     <button id="fun1" type="submit" className='Email_button'>Submit</button>
                 )}
             </form>
-        </>
+        </div>
     );
 }
 

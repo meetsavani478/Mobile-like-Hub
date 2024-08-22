@@ -113,7 +113,7 @@ const Footer = (props) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fab fa-instagram" style={{fontSize:"3.7vh"}}></i>
+                  <i className="fab fa-instagram" style={{ fontSize: "3.7vh" }}></i>
                 </a>
               </li>
               <li>
@@ -122,7 +122,7 @@ const Footer = (props) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fab fa-facebook" style={{fontSize:"3.7vh"}}></i>
+                  <i className="fab fa-facebook" style={{ fontSize: "3.7vh" }}></i>
                 </a>
               </li>
               <li>
@@ -131,7 +131,7 @@ const Footer = (props) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fab fa-snapchat" style={{fontSize:"3.7vh"}}></i>
+                  <i className="fab fa-snapchat" style={{ fontSize: "3.7vh" }}></i>
                 </a>
               </li>
               <li>
@@ -140,7 +140,7 @@ const Footer = (props) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fab fa-twitter" style={{fontSize:"3.7vh"}}></i>
+                  <i className="fab fa-twitter" style={{ fontSize: "3.7vh" }}></i>
                 </a>
               </li>
               <li>
@@ -149,7 +149,7 @@ const Footer = (props) => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <i className="fa-solid fa-location-dot" style={{fontSize:"3.7vh"}}></i>
+                  <i className="fa-solid fa-location-dot" style={{ fontSize: "3.7vh" }}></i>
                 </a>
               </li>
             </ul>
@@ -191,7 +191,7 @@ const Footer = (props) => {
                     data-bs-toggle="modal"
                     data-bs-target="#contactModal"
                   >
-                    <h5 style={{ color: "white", marginTop: "0.6vh" }}>
+                    <h5>
                       Contact
                     </h5>
                   </div>
@@ -204,11 +204,9 @@ const Footer = (props) => {
               )}
               {isLoggedIn && (
                 <li>
-                  <div className="custom-footer-Contact">
+                  <div className="custom-footer-logged-in">
                     <NavLink to={`/Login`}>
-                      <h5 style={{ color: "white"}}>
                         Logout
-                      </h5>
                     </NavLink>
                   </div>
                 </li>
@@ -220,6 +218,7 @@ const Footer = (props) => {
           <p>&copy; 2024 Mobile-Like-Hub. All rights reserved.</p>
         </div>
       </footer>
+
       <div
         className="modal fade"
         id="contactModal"

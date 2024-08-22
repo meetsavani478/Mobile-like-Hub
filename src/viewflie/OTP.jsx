@@ -40,7 +40,9 @@ const OTP =()=>{
             window.alert(error.response.data.error);
         }
 }
-    return(<div className='OTP_body'>
+    return(
+    <dic className="center-pass">
+    <div className='OTP_body'>
     <form onSubmit={Submit} method="post" className="OTP_form">
         <h3 className='OTP_h3'>ENTER YOUR OTP PLEASE </h3>
         <div className="OTP_main">
@@ -50,6 +52,8 @@ const OTP =()=>{
         <br/>
         <button id="fun1" type="submit" className='OTP_button'> Submit </button>
     </form>
-    </div>)
+    </div>
+    </dic>
+    )
 }
 export default OTP

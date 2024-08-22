@@ -23,7 +23,12 @@
     -o-border-radius: 12px;
     -webkit-animation: slideInUp 2s ease-in-out;
 }
-
+.Loading_image{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
 .User_m1 .fa-circle-xmark {
     position: absolute;
     top: 1rem;

@@ -18,7 +18,7 @@ const Update_profile = () => {
     password: "",
     confirmPassword: "",
   });
-  const [showModal, setShowModal] = useState(false); // State to control modal visibility
+  const [showModal, setShowModal] = useState(false); 
 
   useEffect(() => {
     Axios.defaults.headers.common[
@@ -141,7 +141,7 @@ const Update_profile = () => {
   };
 
   return (
-    <>
+    <div className='main-pass'>
       <form onSubmit={Submit} method="post" className="Update_form">
         <Header />
         <div className="Update_main">
@@ -149,7 +149,6 @@ const Update_profile = () => {
           <div className="Update_main_1">
             <TextField
               id="outlined-basic"
-              label="Username"
               variant="outlined"
               className="Update_input"
               type="text"
@@ -164,7 +163,6 @@ const Update_profile = () => {
           <div className="Update_main_1">
             <TextField
               className="Update_input"
-              label="E-Mail"
               type="email"
               name="Email"
               required
@@ -271,7 +269,7 @@ const Update_profile = () => {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 };
 

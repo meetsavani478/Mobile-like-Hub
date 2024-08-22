@@ -129,13 +129,13 @@
   }
 
   .Update_main_1 {
-    width: 100%; 
-    max-width: 12rem;
+    width: 110%; 
+    max-width: 15.5rem;
   }
 }
 @media (max-width: 400px) {
   .Update_main {
-    width: 100%; 
+    width: 115%; 
     max-width: 18rem;
     padding: 1rem;
   }
@@ -153,12 +153,12 @@
 
   .Update_main_1 {
     flex-direction: column;
-    width: 100%; 
+    width: 115%; 
     gap: 0.5rem;
   }
 
   .Update_main_1 input {
     width: 100%;
-    max-width: none;
+    max-width: 18rem;
   }
 }

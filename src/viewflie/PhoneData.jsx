@@ -1,4 +1,4 @@
-// src/components/PhoneData.js
+
 import React, { useEffect, useState } from "react";
 import Axios from 'axios';
 import SimpleImageSlider from "react-simple-image-slider";

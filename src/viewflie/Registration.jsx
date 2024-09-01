@@ -27,7 +27,7 @@ function RegistrationComponent() {
         const { Name, Email, Password, PasswordC } = data; 
         setLoading(true); 
         try {
-            const response = await Axios.post('https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/Registration', {
+            const response = await Axios.post('http://localhost:4000/Registration', {
                 Name,
                 Email,
                 Password,

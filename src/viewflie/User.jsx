@@ -10,7 +10,7 @@ const User = () => {
     const [data, setData] = useState({});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const imageBaseUrl = 'https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/';
+    const imageBaseUrl = 'http://localhost:4000/';
     const navigate = useNavigate();
     const id = localStorage.getItem('userId');
 
@@ -20,7 +20,7 @@ const User = () => {
     const fetchData = async () => {
         try {
             axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.getItem('token')}`;
-            const response = await axios.get(`https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/user/${id}`);
+            const response = await axios.get(`http://localhost:4000/user/${id}`);
             const apiData = response.data;
             if (apiData) {
                 setData(apiData);
@@ -84,7 +84,7 @@ const User = () => {
         formData.append('profileImage', profileImage);
 
         try {
-            const response = await axios.post(`https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/file_upload/${id}`, formData, {
+            const response = await axios.post(`http://localhost:4000/file_upload/${id}`, formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                 }

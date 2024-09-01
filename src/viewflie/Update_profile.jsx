@@ -28,7 +28,7 @@ const Update_profile = () => {
       try {
         if (id) {
           const response = await Axios.get(
-            `https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/Profile/${id}`
+            `http://localhost:4000/Profile/${id}`
           );
           if (response.data) {
             SetData(response.data);
@@ -64,7 +64,7 @@ const Update_profile = () => {
 
     try {
       const response = await Axios.post(
-        `https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/Profile/${id}`,
+        `http://localhost:4000/Profile/${id}`,
         {
           Name,
           Email,
@@ -108,7 +108,7 @@ const Update_profile = () => {
 
     try {
       const response = await Axios.post(
-        `https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/change-password/${id}`,
+        `http://localhost:4000/change-password/${id}`,
         {
           password,
         },

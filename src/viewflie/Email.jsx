@@ -23,7 +23,7 @@ const Email = () => {
 
         const { Email } = Data;
         try {
-            const response = await Axios.post('https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/OTP', {
+            const response = await Axios.post('http://localhost:4000/OTP', {
                 Email
             }, {
                 headers: {

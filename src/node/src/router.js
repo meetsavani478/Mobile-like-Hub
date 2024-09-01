@@ -92,7 +92,7 @@ router.post('/Login_Data', async (req, res) => {
 
         if (isPassword && user.Name.toString() === user_name.toString()) {
             const token = jwt.sign({ _id: user._id }, process.env.JWT_SECRET, { expiresIn: '30m' });
-            return res.status(200).json({ id:`${user._id}`, token});
+            return res.status(200).json({ id:`${user._id}`, token,name:`${user.Name}`});
         } else {
             return res.status(404).json({ error: 'Login details are incorrect.' });
         }

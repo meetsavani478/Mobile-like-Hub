@@ -38,7 +38,7 @@ const Phone = (props) => {
                     <NavLink className="h6 custom-text-decoration-none custom-text-truncate" to={`/PhoneData/` + name + '/' + id}>{title}</NavLink>
                 </div>
                 <div className="custom-d-flex custom-align-items-center custom-justify-content-center mt-2">
-                    <h5>{price}</h5><h6 className="custom-text-muted ml-2"><del>₹1,23,00</del></h6>
+                    <h5>₹{new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 }).format(price)}</h5><h6 className="custom-text-muted ml-2"><del>₹{new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 }).format(price*1.1)}</del></h6>
                 </div>
                 <div className="custom-d-flex custom-align-items-center custom-justify-content-center mb-1">
                     <small className="fa fa-star custom-text-primary mr-1"></small>

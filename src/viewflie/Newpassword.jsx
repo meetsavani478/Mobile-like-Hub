@@ -18,7 +18,7 @@ const Npassword =()=>{
    
         const {new_pass,new_pass_1}=Data;
         try{
-            const Send_1 = await Axios.post('https://3tw6kivn80.execute-api.ap-south-1.amazonaws.com/New_login',{
+            const Send_1 = await Axios.post('http://localhost:4000/New_login',{
                 new_pass,new_pass_1},{
                     headers: {
                         'Content-Type': 'application/json',

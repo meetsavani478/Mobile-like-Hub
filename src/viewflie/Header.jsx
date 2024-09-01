@@ -3,19 +3,23 @@ import { NavLink } from 'react-router-dom';
 import './Cssfail/Home.css';
 import { useNavigate } from 'react-router-dom';
 import image_url from "../node/uploads/Mesa_de_trabajo_1-100-removebg-preview.png";
+import 'bootstrap/dist/css/bootstrap.min.css';
 const Header = () => {
-
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [Name, setName] = useState('');
     const path = useNavigate();
     const id = localStorage.getItem('userId');
-    const token=localStorage.getItem('token')
+    const token = localStorage.getItem('token');
+
     useEffect(() => {
         if (token) {
             setIsLoggedIn(true);
         } else {
             setIsLoggedIn(false);
         }
-    }, [id]);
+        setName(localStorage.getItem('user_Name'));
+    }, [id, token]);
+
     const toggleMenu = () => {
         const menuList = document.querySelector('.menu-list');
         if (menuList) {
@@ -27,9 +31,13 @@ const Header = () => {
         <header>
             <section className="title-1">
                 <div className="logo-1">
-                    <img src={image_url} className="image_url" alt="Logo" onClick={() => path("/")}/>
+                    <img src={image_url} className="image_url" alt="Logo" onClick={() => path("/")} />
                     &nbsp;
-                    <p id="count" style={{ fontSize: '1.2rem', color: '#f55142' }}></p>
+                    {isLoggedIn && (
+                        <p id="welcome" className="welcome-message text-white mb-0">
+                            Welcome, <span className="user-name text-warning">{Name}</span>
+                        </p>
+                    )}
                 </div>
                 <div className="logo">
                     <div className="burger-menu" onClick={toggleMenu}>
@@ -47,26 +55,25 @@ const Header = () => {
                             <>
                                 <li>
                                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
-                                        <i className="fa-solid fa-house-chimney" style={{color:"white" ,fontSize:"1.3rem"}}></i>
+                                        <i className="fa-solid fa-house-chimney" style={{ color: "white", fontSize: "1.3rem" }}></i>
                                         <NavLink to={`/Project/${id}`}>Home</NavLink>
                                     </div>
                                 </li>
                                 <li>
                                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
-                                        <i className="fa-solid fa-dollar-sign" style={{color:"white" ,fontSize:"1.3rem"}}></i>
+                                        <i className="fa-solid fa-dollar-sign" style={{ color: "white", fontSize: "1.3rem" }}></i>
                                         <NavLink to={`/About`}>About</NavLink>
                                     </div>
                                 </li>
                                 <li>
                                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
-                                        <i className="fa-solid fa-user" style={{color:"white" ,fontSize:"1.3rem"}}></i>
+                                        <i className="fa-solid fa-user" style={{ color: "white", fontSize: "1.3rem" }}></i>
                                         <NavLink to={`/User`}>User</NavLink>
                                     </div>
                                 </li>
-
                                 <li>
                                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
-                                        <i className="fa-solid fa-envelope" style={{color:"white" ,fontSize:"1.3rem"}}></i>
+                                        <i className="fa-solid fa-envelope" style={{ color: "white", fontSize: "1.3rem" }}></i>
                                         <NavLink to={`/Update_profile`}>Update User_Id</NavLink>
                                     </div>
                                 </li>

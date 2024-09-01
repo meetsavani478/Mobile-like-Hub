@@ -14,6 +14,9 @@ import PhoneData from "./viewflie/PhoneData";
 import Footer from "./viewflie/footer";
 import Payment from './viewflie/Payment';
 import About from "./viewflie/About";
+import Addcart from './viewflie/Add_to_cart';
+import AdProduct from './adminpanel/adproduct';
+import List from './adminpanel/List'
 const Error = () => {
     return <h1>404 Error</h1>;
 }
@@ -25,7 +28,7 @@ const App = () => {
                 <Route path="/Registration" element={<Registration />} />
                 <Route path="/Login" element={<Logins />} />
                 <Route path="/About" element={<About />} />
-                <Route path="/" element={<Project />} />
+                <Route path="/" element={<Project id={10}/>} />
                 <Route path="/Project/:id" element={<Project />} />
                 <Route path="/User" element={<User />} />
                 <Route path='/Update_profile' element={<Update_profile />} />
@@ -36,12 +39,18 @@ const App = () => {
                 <Route path="/footer" element={<Footer />} />
                 <Route path="/Buy/:num" element={<Buypage />} />
                 <Route path="/Email" element={<Email />} />
+                <Route path="/Addcart" element={<Addcart/>} />
                 <Route path="/OTP" element={<OTP />} />
                 <Route path="/New_password" element={<Newpassword />} />
+             
+             
+                <Route path="/adProduct" element={<AdProduct />} />
+                <Route path="/Product-List" element={<List />} />
+                
+             
                 <Route path="*" element={<Error />} />
             </Routes>
     </>
     );
 }
-
 export default App;

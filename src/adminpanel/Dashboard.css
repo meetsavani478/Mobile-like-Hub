@@ -1,0 +1,43 @@
+.sidebar {
+      position: sticky;
+      top: 0;
+      background-color: azure;
+      padding: 20px;
+      height: 100vh;
+      overflow-y: auto;
+      color: black;
+      animation: slideIn 0.5s ease-out;
+  }
+  
+  @keyframes slideIn {
+      from {
+          transform: translateX(-100%);
+          opacity: 0;
+      }
+      to {
+          transform: translateX(0);
+          opacity: 1;
+      }
+  }
+  
+  .dashboard-container {
+      animation: fadeIn 1s ease-out;
+  }
+  @keyframes fadeIn {
+      from {
+          opacity: 0;
+      }
+      to {
+          opacity: 1;
+      }
+  }
+  
+  .text-color {
+      color: black;
+      transition: color 0.3s ease;
+  }
+  
+  .text-color:hover {
+      color: black;
+  }
+  

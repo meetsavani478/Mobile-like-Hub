@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
-import { Container, Row, Col, Button, Table, Modal, Dropdown, Form } from 'react-bootstrap';
+import { Container, Row, Col, Button, Table, Modal, Dropdown, Form, Nav } from 'react-bootstrap';
 import Sidebar from './sidebar';
 import axios from 'axios';
 import { FaTrashAlt, FaEdit, FaEye, FaEllipsisV } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 const List = () => {
   const [items, setItems] = useState([]);
@@ -11,6 +12,7 @@ const List = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const [selectedItem, setSelectedItem] = useState(null);
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const fetchItems = async () => {
@@ -32,7 +34,6 @@ const List = () => {
       console.error('Error deleting item:', error);
     }
   };
-
 
   const handleEdit = (item) => {
     setSelectedItem(item);
@@ -58,8 +59,8 @@ const List = () => {
     setSelectedItem({ ...selectedItem, [e.target.name]: e.target.value });
   };
 
-  const checkout = () => {
-    // Implement checkout logic
+  const handleSetProduct = () => {
+    navigate('/product-listing');
   };
 
   return (
@@ -69,6 +70,8 @@ const List = () => {
         <Row>
           <Sidebar />
           <Col md={10} className="main-con mt-5">
+            <h2>Product List</h2>
+            <Button variant="primary" onClick={handleSetProduct} className="mb-3">Add Product</Button> 
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -119,16 +122,6 @@ const List = () => {
                 )}
               </tbody>
             </Table>
-
-            {items.length > 0 && (
-              <Row className="mt-4">
-                <Col md={8}>
-                  <Button variant="warning" size="lg" block onClick={checkout}>
-                    Proceed to Checkout
-                  </Button>
-                </Col>
-              </Row>
-            )}
           </Col>
         </Row>
       </Container>
@@ -187,6 +180,7 @@ const List = () => {
               </Button>
             </Form>
           )}
+          <Nav.Link href="/product-listing">Products</Nav.Link>
         </Modal.Body>
       </Modal>
     </div>

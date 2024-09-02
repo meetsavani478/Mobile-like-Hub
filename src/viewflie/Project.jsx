@@ -14,6 +14,7 @@ const Project = (props) => {
     const {id}=useParams();
     if(props.id){
         localStorage.removeItem('token');
+        localStorage.removeItem("userId");
     }
     const Fetch = async () => {
         try {

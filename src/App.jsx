@@ -17,6 +17,7 @@ import About from "./viewflie/About";
 import Addcart from './viewflie/Add_to_cart';
 import AdProduct from './adminpanel/adproduct';
 import List from './adminpanel/List'
+import Product from './adminpanel/product';
 const Error = () => {
     return <h1>404 Error</h1>;
 }
@@ -46,7 +47,7 @@ const App = () => {
              
                 <Route path="/adProduct" element={<AdProduct />} />
                 <Route path="/Product-List" element={<List />} />
-                
+                <Route path="/product-listing" element={<Product />} />
              
                 <Route path="*" element={<Error />} />
             </Routes>

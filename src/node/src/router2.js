@@ -13,97 +13,56 @@ router2.use(express.json());
 router2.use(express.urlencoded({ extended: true }));
 router2.use(bodyParser.json());
 
-
-router2.post('/IPhone_Data', async (req, res) => {
+router2.post('/phondata/:category', async (req, res) => {
+    const category = req.params.category;
+    console.log('Category:', category);
+   
     try {
         const data = req.body;
 
-        const phoneData = await PhoneData.findOneAndUpdate(
-            {},
-            { $push: { Iphone: data.Iphone } },
-            { new: true, upsert: true }
-        );
-        // console.log(phoneData)
-        res.status(202).send(phoneData);
-    } catch (e) {
-        res.status(404).send(e);
-    }
-});
-router2.post('/SPhone_Data', async (req, res) => {
-    try {
-        const data = req.body;
+        const newProduct = {
+            image: [
+                {
+                    img_1: data.image1,
+                    img_2: data.image2,
+                    img_3: data.image3
+                }
+            ],
+            Price: data.price,
+            Title: data.productName,
+            Brand: data.brand,
+            Operating_System: data.operatingSystem,
+            Memory_Storage: data.memoryStorage,
+            Model_Name: data.modelName,
+            Screen_Size: data.screenSize,
+            image_1: data.image4,
+            image_2: data.image5,
+            image_3: data.image6,
+            image_4: data.image7
+        };
+
+        const update = {
+            $push: { [category]: newProduct }
+        };
 
         const phoneData = await PhoneData.findOneAndUpdate(
             {},
-            { $push: { Samsung: data.Samsung } },
+            update,
             { new: true, upsert: true }
         );
-        // console.log(phoneData)
-        res.status(202).send(phoneData);
-    } catch (e) {
-        res.status(404).send(e);
-    }
-});
-router2.post('/VPhone_Data', async (req, res) => {
-    try {
-        const data = req.body;
 
-        const phoneData = await PhoneData.findOneAndUpdate(
-            {},
-            { $push: { Vivo: data.Vivo } },
-            { new: true, upsert: true }
-        );
-        res.status(202).send(phoneData);
-    } catch (e) {
-        console.error(e);
-        res.status(404).send(e);
-    }
-});
-router2.post('/OPhone_Data', async (req, res) => {
-    try {
-        const data = req.body;
+        console.log(phoneData);
 
-        const phoneData = await PhoneData.findOneAndUpdate(
-            {},
-            { $push: { OnePlus: data.OnePlus } },
-            { new: true, upsert: true }
-        );
-        // console.log(phoneData)
-        res.status(202).send(phoneData);
+        res.status(201).send(phoneData);
     } catch (e) {
-        res.status(404).send(e);
+        console.error('Error:', e);
+        res.status(500).json({ message: 'Internal server error', error: e.message });
     }
 });
-router2.post('/MPhone_Data', async (req, res) => {
-    try {
-        const data = req.body;
 
-        const phoneData = await PhoneData.findOneAndUpdate(
-            {},
-            { $push: { Motorola: data.Motorola } },
-            { new: true, upsert: true }
-        );
-        // console.log(phoneData)
-        res.status(202).send(phoneData);
-    } catch (e) {
-        res.status(404).send(e);
-    }
-});
-router2.post('/IQPhone_Data', async (req, res) => {
-    try {
-        const data = req.body;
 
-        const phoneData = await PhoneData.findOneAndUpdate(
-            {},
-            { $push: { IQoo: data.IQoo } },
-            { new: true, upsert: true }
-        );
-        // console.log(phoneData)
-        res.status(202).send(phoneData);
-    } catch (e) {
-        res.status(404).send(e);
-    }
-});
+
+
 router2.post('/mycontact', async (req, res) => {
     const { name, email, subject, message } = req.body;
     try {
@@ -207,28 +166,38 @@ router2.put('/api/items/:id', async (req, res) => {
 });
 
 
-// router2.delete('/api/items/:id', async (req, res) => {
-//     const id = req.params.id;
-//     try {
-//         const result = await PhoneData.deleteOne({
-//             $or: [
-//                 { 'Iphone._id': id },
-//                 { 'Samsung._id': id },
-//                 { 'OnePlus._id': id },
-//                 { 'Vivo._id': id },
-//                 { 'Motorola._id': id }
-//             ]
-//         });
+router2.delete('/api/items/:id', async (req, res) => {
+    const id = req.params.id;
+    console.log(id);
+    try {
+        const result = await PhoneData.updateOne(
+            { 
+                $or: [
+                    { 'Iphone._id': id },
+                    { 'Samsung._id': id },
+                    { 'OnePlus._id': id },
+                    { 'Vivo._id': id },
+                    { 'Motorola._id': id }
+                ]
+            },
+            { $pull: {
+                Iphone: { _id: id },
+                Samsung: { _id: id },
+                OnePlus: { _id: id },
+                Vivo: { _id: id },
+                Motorola: { _id: id }
+            } }
+        );
+        if (result.modifiedCount === 0) {
+            return res.status(404).send({ message: 'Item not found' });
+        }
         
-//         if (result.deletedCount === 0) {
-//             return res.status(404).send({ message: 'Item not found' });
-//         }
-//         res.json({ message: 'Item deleted successfully' });
-//     } catch (error) {
-//         console.error('Error deleting item:', error);
-//         res.status(500).send({ message: 'Server error' });
-//     }
-// });
+        res.json({ message: 'Item deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting item:', error);
+        res.status(500).send({ message: 'Server error' });
+    }
+});
 
 
 router2.get('/users/:id', async (req, res) => {

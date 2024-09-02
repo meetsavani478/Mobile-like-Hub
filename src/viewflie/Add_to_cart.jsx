@@ -27,13 +27,17 @@ const Cart = () => {
     });
   };
 
-  const removeItem = id => {
-    setItems(prevItems => {
-      const updatedItems = prevItems.filter(item => item.id !== id);
-      localStorage.setItem('cart_items', JSON.stringify(updatedItems));
-      return updatedItems;
-    });
-  };
+  const removeItem = (name, id) => {   
+  setItems(prevItems => {
+    const updatedItems = prevItems.filter(item => item.name !== name || item.id !== id);
+    
+  
+    localStorage.setItem('cart_items', JSON.stringify(updatedItems));
+    
+    return updatedItems;
+  });
+};
+
   const totalCost = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
 
@@ -73,7 +77,7 @@ const Cart = () => {
                   </Button>
                 </Col>
                 <Col md={2} className="text-end">
-                  <Button variant="danger" onClick={() => removeItem(item.id)}>
+                  <Button variant="danger" onClick={() => removeItem(item.name,item.id)}>
                     <FaTrashAlt />
                   </Button>
                 </Col>

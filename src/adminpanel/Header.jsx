@@ -12,8 +12,7 @@ export default class Header extends Component {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Nav className="mr-auto">
                             <Nav.Link href="/adProduct">Home</Nav.Link>
-                            <Nav.Link href="/Product-List">List</Nav.Link>
-                            <Nav.Link href="#products">Products</Nav.Link>
+                            <Nav.Link href="/Product-List">Product-List</Nav.Link>
                             <Nav.Link href="#users">Users</Nav.Link>
                             <NavDropdown title="Settings" id="basic-nav-dropdown">
                                 <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>

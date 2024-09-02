@@ -15,7 +15,7 @@ router2.use(bodyParser.json());
 
 router2.post('/phondata/:category', async (req, res) => {
     const category = req.params.category;
-    console.log('Category:', category);
+    // console.log('Category:', category);
    
     try {
         const data = req.body;
@@ -51,7 +51,7 @@ router2.post('/phondata/:category', async (req, res) => {
             { new: true, upsert: true }
         );
 
-        console.log(phoneData);
+        // console.log(phoneData);
 
         res.status(201).send(phoneData);
     } catch (e) {
@@ -59,9 +59,6 @@ router2.post('/phondata/:category', async (req, res) => {
         res.status(500).json({ message: 'Internal server error', error: e.message });
     }
 });
-
-
-
 
 router2.post('/mycontact', async (req, res) => {
     const { name, email, subject, message } = req.body;

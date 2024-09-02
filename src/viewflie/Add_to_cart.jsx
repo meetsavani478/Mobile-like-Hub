@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Card, Button, Form } from 'react-bootstrap';
 import { FaTrashAlt, FaPlus, FaMinus } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import Header from './Header';
 
 const Cart = () => {
   const [items, setItems] = useState([]);
@@ -49,8 +50,10 @@ const Cart = () => {
   }
 
   return (
+    <>
+    <Header />
     <Container className="py-5">
-      <Row className="mb-4">
+      <Row className="mb-4 mt-5">
         <Col>
           <h2 className="text-center">Shopping Cart</h2>
         </Col>
@@ -105,6 +108,7 @@ const Cart = () => {
         </Row>
       )}
     </Container>
+    </>
   );
 };
 

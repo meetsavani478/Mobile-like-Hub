@@ -77,6 +77,11 @@ const Header = () => {
                                         <NavLink to={`/Update_profile`}>Update User_Id</NavLink>
                                     </div>
                                 </li>
+                                <li>
+                                    <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'center', alignItems: 'center' }}>
+                                        <NavLink to={`/Addcart`}><i class="fa-solid fa-cart-shopping" style={{ color: "white", fontSize: "1.3rem" }}></i></NavLink>
+                                    </div>
+                                </li>
                             </>
                         )}
                     </ul>

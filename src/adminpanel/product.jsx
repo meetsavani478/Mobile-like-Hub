@@ -3,6 +3,7 @@ import { Container, Row, Col, Form, Button, Table, Alert } from 'react-bootstrap
 import Header from './Header';
 import Sidebar from './sidebar';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Product = () => {
       const [category, setCategory] = useState('all');
@@ -39,6 +40,7 @@ const Product = () => {
                   [name]: value
             }));
       };
+      const navigate = useNavigate();
 
       const handleAddProduct = async () => {
             // Check if all required fields are filled
@@ -67,13 +69,16 @@ const Product = () => {
             });
             const cat = localStorage.getItem('category');
             try {
-                  await axios.post(`http://localhost:4000/phondata/${cat}`, productDetails, {
+                  const apidata =  await axios.post(`http://localhost:4000/phondata/${cat}`, productDetails, {
                         headers: {
                               'Content-Type': 'application/json',
                               'Accept': 'application/json',
                         }
                   });
                   console.log('Product added successfully!');
+                  if(apidata.data){
+                        navigate('/Product-List');
+                  }
 
             } catch (error) {
                   console.error('Error adding product:', error.response ? error.response.data : error.message);

@@ -41,7 +41,10 @@ const Login = () => {
             });
 
             const apiData = response.data;
-            if (apiData.token) {
+
+            if(apiData.isAdmin) {
+                navigate('/adProduct');
+            } else if (apiData.token) {
                 const id = apiData.id;
                 localStorage.setItem("userId", id);
                 localStorage.setItem('token', apiData.token);
@@ -49,6 +52,7 @@ const Login = () => {
                 navigate(`/Project/${id}`);
                 console.log(apiData.token);
             } else {
+                // Error
                 localStorage.setItem("userId", "");
                 window.alert(apiData.error);
             }
@@ -63,6 +67,7 @@ const Login = () => {
             Password: ""
         });
     };
+
     return (
         <>
             <Header />
@@ -149,7 +154,6 @@ const Login = () => {
             </section>
         </>
     );
-    
 };
 
 export default Login;

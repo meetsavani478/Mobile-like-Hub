@@ -15,8 +15,6 @@ router2.use(bodyParser.json());
 
 router2.post('/phondata/:category', async (req, res) => {
     const category = req.params.category;
-    // console.log('Category:', category);
-   
     try {
         const data = req.body;
 
@@ -50,8 +48,6 @@ router2.post('/phondata/:category', async (req, res) => {
             update,
             { new: true, upsert: true }
         );
-
-        // console.log(phoneData);
 
         res.status(201).send(phoneData);
     } catch (e) {
@@ -113,59 +109,111 @@ router2.post('/users/:id', async (req, res) => {
     }
 });
 
-
-router2.put('/api/items/:id', async (req, res) => {
+router2.post('/api/items/:id', async (req, res) => {
     const id = req.params.id;
-    const { Title, Price, image } = req.body;
+    const {
+        productName,
+        price,
+        image1,
+        image2,
+        image3,
+        image4,
+        image5,
+        image6,
+        image7,
+        brand,
+        operatingSystem,
+        memoryStorage,
+        modelName,
+        screenSize
+    } = req.body;
 
-    const updatedImage = Array.isArray(image) ? image[0].img_1 : image;
+    const categories = ['Iphone', 'Samsung', 'OnePlus', 'Vivo', 'Motorola', 'IQoo'];
+    const updateFields = categories.reduce((fields, category) => {
+        fields[`${category}.$[elem].Title`] = productName;
+        fields[`${category}.$[elem].Price`] = price;
+        fields[`${category}.$[elem].image.0.img_1`] = image1;
+        fields[`${category}.$[elem].image.0.img_2`] = image2;
+        fields[`${category}.$[elem].image.0.img_3`] = image3;
+        fields[`${category}.$[elem].image_1`] = image4;
+        fields[`${category}.$[elem].image_2`] = image5;
+        fields[`${category}.$[elem].image_3`] = image6;
+        fields[`${category}.$[elem].image_4`] = image7;
+        fields[`${category}.$[elem].Brand`] = brand;
+        fields[`${category}.$[elem].Operating_System`] = operatingSystem;
+        fields[`${category}.$[elem].Memory_Storage`] = memoryStorage;
+        fields[`${category}.$[elem].Model_Name`] = modelName;
+        fields[`${category}.$[elem].Screen_Size`] = screenSize;
+        return fields;
+    }, {});
 
     try {
-        const updateResult = await PhoneData.updateOne(
-            { $or: [
-                { 'Iphone._id': id },
-                { 'Samsung._id': id },
-                { 'OnePlus._id': id },
-                { 'Vivo._id': id },
-                { 'Motorola._id': id }
-            ] },
-            { $set: {
-                'Iphone.$[elem].Title': Title,
-                'Iphone.$[elem].Price': Price,
-                'Iphone.$[elem].image.0.img_1': updatedImage,
-                'Samsung.$[elem].Title': Title,
-                'Samsung.$[elem].Price': Price,
-                'Samsung.$[elem].image.0.img_1': updatedImage,
-                'OnePlus.$[elem].Title': Title,
-                'OnePlus.$[elem].Price': Price,
-                'OnePlus.$[elem].image.0.img_1': updatedImage,
-                'Vivo.$[elem].Title': Title,
-                'Vivo.$[elem].Price': Price,
-                'Vivo.$[elem].image.0.img_1': updatedImage,
-                'Motorola.$[elem].Title': Title,
-                'Motorola.$[elem].Price': Price,
-                'Motorola.$[elem].image.0.img_1': updatedImage
-            }},
+        const updateResult = await PhoneData.updateMany(
+            { 
+                $or: categories.map(category => ({ [`${category}._id`]: id }))
+            },
+            { $set: updateFields },
             {
                 arrayFilters: [{ 'elem._id': id }],
                 multi: true
             }
         );
 
-        if (updateResult.nModified === 0) {
+        if (updateResult.matchedCount === 0) {
             return res.status(404).send({ message: 'Item not found in any category' });
         }
-        res.json({ message: 'Item updated successfully', updatedItem: { id, Title, Price, image: updatedImage } });
+
+        res.json({ message: 'Item updated successfully' });
     } catch (error) {
         console.error('Error updating item:', error);
         res.status(500).send({ message: 'Server error' });
     }
 });
 
+router2.get('/api/items/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
 
+        const updateResult = await PhoneData.findOne({
+            $or: [
+                { 'Iphone._id': id },
+                { 'Samsung._id': id },
+                { 'OnePlus._id': id },
+                { 'Vivo._id': id },
+                { 'Motorola._id': id },
+                { 'IQoo._id': id }
+
+            ]
+        });
+
+        if (!updateResult) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+        let foundProduct = null;
+        for (const category of ['Iphone', 'Samsung', 'OnePlus', 'Vivo', 'Motorola','IQoo']) {
+            const productsArray = updateResult[category];
+            if (productsArray) {
+                foundProduct = productsArray.find(product => product._id.toString() === id);
+                if (foundProduct) break;
+            }
+        }
+
+        if (foundProduct) {
+            return res.json(foundProduct);
+        } else {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+
+    } catch (error) {
+        console.error('Error retrieving product:', error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+});
+
+  
 router2.delete('/api/items/:id', async (req, res) => {
     const id = req.params.id;
-    console.log(id);
     try {
         const result = await PhoneData.updateOne(
             { 
@@ -174,7 +222,9 @@ router2.delete('/api/items/:id', async (req, res) => {
                     { 'Samsung._id': id },
                     { 'OnePlus._id': id },
                     { 'Vivo._id': id },
-                    { 'Motorola._id': id }
+                    { 'Motorola._id': id },
+                    { 'IQoo._id': id }
+                
                 ]
             },
             { $pull: {
@@ -182,7 +232,9 @@ router2.delete('/api/items/:id', async (req, res) => {
                 Samsung: { _id: id },
                 OnePlus: { _id: id },
                 Vivo: { _id: id },
-                Motorola: { _id: id }
+                Motorola: { _id: id },
+                IQoo: { _id: id }
+
             } }
         );
         if (result.modifiedCount === 0) {
@@ -210,7 +262,7 @@ router2.get('/users/:id', async (req, res) => {
 
 router2.get('/Phone_Detail/:name/:id', async (req, res) => {
     const phone_name = req.params.name;
-    console.log(phone_name)
+    // console.log(phone_name)
     try {
         const phoneData = await PhoneData.findOne();
         if (!phoneData) {
@@ -280,7 +332,7 @@ router2.get('/api/items', async (req, res) => {
         if (!data) {
             return res.status(404).json({ error: 'Item not found' });
         }
-        const Data = [data.Iphone, data.Samsung, data.OnePlus, data.Vivo, data.Motorola];
+        const Data = [data.Iphone, data.Samsung, data.OnePlus, data.Vivo, data.Motorola,data.IQoo];
         // console.log(Data); 
         res.json(Data);
     } catch (error) {

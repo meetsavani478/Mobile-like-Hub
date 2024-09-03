@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Container, Row, Col, Form, Button, Table, Alert } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Container, Row, Col, Form, Button, Table, Alert, Spinner } from 'react-bootstrap';
 import Header from './Header';
 import Sidebar from './sidebar';
 import axios from 'axios';
@@ -23,15 +23,18 @@ const Product = () => {
             screenSize: '',
             price: ''
       });
-
+      const EditData = localStorage.getItem('Edit');
       const [productList, setProductList] = useState([]);
       const [imageFields, setImageFields] = useState(['image1', 'image2', 'image3']);
       const [errorMessage, setErrorMessage] = useState('');
+      const [loading, setLoading] = useState(false);
+      const navigate = useNavigate();
 
       const handleCategoryChange = (e) => {
             setCategory(e.target.value);
             localStorage.setItem('category', e.target.value);
       };
+
 
       const handleInputChange = (e) => {
             const { name, value } = e.target;
@@ -40,56 +43,104 @@ const Product = () => {
                   [name]: value
             }));
       };
-      const navigate = useNavigate();
+
 
       const handleAddProduct = async () => {
-            // Check if all required fields are filled
             const allFieldsFilled = Object.values(productDetails).every(value => value.trim() !== '') && category !== 'all';
             if (!allFieldsFilled) {
                   setErrorMessage('Please fill in all the details before adding the product.');
                   return;
             }
             setErrorMessage('');
-            setProductList([...productList, productDetails]);
-            setProductDetails({
-                  image1: '',
-                  image2: '',
-                  image3: '',
-                  image4: '',
-                  image5: '',
-                  image6: '',
-                  image7: '',
-                  productName: '',
-                  brand: '',
-                  operatingSystem: '',
-                  memoryStorage: '',
-                  modelName: '',
-                  screenSize: '',
-                  price: ''
-            });
-            const cat = localStorage.getItem('category');
+            setLoading(true);
             try {
-                  const apidata =  await axios.post(`http://localhost:4000/phondata/${cat}`, productDetails, {
-                        headers: {
-                              'Content-Type': 'application/json',
-                              'Accept': 'application/json',
+                  const cat = localStorage.getItem('category');
+            
+                  if (cat) {
+                        const apidata = await axios.post(`http://localhost:4000/phondata/${cat}`, productDetails, {
+                              headers: {
+                                    'Content-Type': 'application/json',
+                                    'Accept': 'application/json',
+                              }
+                        });
+                        if (apidata.data) {
+                              navigate('/Product-List');
                         }
-                  });
-                  console.log('Product added successfully!');
-                  if(apidata.data){
-                        navigate('/Product-List');
+                  } else {
+                        const apidata = await axios.post(`http://localhost:4000/api/items/${EditData}`,productDetails);
+                        if (apidata.data) {
+                              navigate('/Product-List');
+                        }
                   }
-
+                  console.log('Product added successfully!');
+                  setProductList([...productList, productDetails]);
+                  setProductDetails({
+                        image1: '',
+                        image2: '',
+                        image3: '',
+                        image4: '',
+                        image5: '',
+                        image6: '',
+                        image7: '',
+                        productName: '',
+                        brand: '',
+                        operatingSystem: '',
+                        memoryStorage: '',
+                        modelName: '',
+                        screenSize: '',
+                        price: ''
+                  });
             } catch (error) {
                   console.error('Error adding product:', error.response ? error.response.data : error.message);
+            } finally {
+                  setLoading(false);
             }
       };
-
       const handleAddImageField = () => {
             if (imageFields.length < 7) {
                   setImageFields([...imageFields, `image${imageFields.length + 1}`]);
             }
       };
+
+      useEffect(() => {
+            if (EditData) {
+                  localStorage.removeItem('category');
+                  setCategory("value");
+
+
+                  const fetchData = async () => {
+                        try {
+                              const apidata = await axios.get(`http://localhost:4000/api/items/${EditData}`);
+                              const { Title, Brand, Operating_System, Memory_Storage, Model_Name, Screen_Size, Price, image_1, image_2, image_3, image_4 } = apidata.data;
+
+                              const newProductDetails = {
+                                    image1: apidata.data.image[0].img_1,
+                                    image2: apidata.data.image[0].img_2,
+                                    image3: apidata.data.image[0].img_3,
+                                    image4: image_1,
+                                    image5: image_2,
+                                    image6: image_3,
+                                    image7: image_4,
+                                    productName: Title,
+                                    brand: Brand,
+                                    operatingSystem: Operating_System,
+                                    memoryStorage: Memory_Storage,
+                                    modelName: Model_Name,
+                                    screenSize: Screen_Size,
+                                    price: Price
+                              };
+
+                              setProductDetails(newProductDetails);
+
+                              setProductList(prevList => [...prevList, newProductDetails]);
+                        } catch (error) {
+                              alert(error.message || "Error fetching product data");
+                        }
+                  };
+
+                  fetchData();
+            }
+      }, [EditData]);
 
       return (
             <>
@@ -191,7 +242,9 @@ const Product = () => {
                                                       {imageFields.length < 7 && (
                                                             <Button variant="secondary" onClick={handleAddImageField}>From the manufacturer Images</Button>
                                                       )}
-                                                      <Button variant="primary" onClick={handleAddProduct} className="ml-2">Add Product</Button>
+                                                      <Button variant="primary" onClick={handleAddProduct} disabled={loading} className="ml-2">
+                                                            {loading ? <Spinner animation="border" size="sm" /> : 'Add Product'}
+                                                      </Button>
                                                       {errorMessage && <Alert variant="danger" className="mt-3">{errorMessage}</Alert>}
                                                       <h3 className="mt-4">Product List</h3>
                                                       <Table striped bordered hover>
@@ -223,7 +276,7 @@ const Product = () => {
                                                                               <td>{product.memoryStorage}</td>
                                                                               <td>{product.modelName}</td>
                                                                               <td>{product.screenSize}</td>
-                                                                              <td>₹{new Intl.NumberFormat('en-IN', { minimumFractionDigits: 2 }).format(product.price)}</td>
+                                                                              <td>{product.price}</td>
                                                                         </tr>
                                                                   ))}
                                                             </tbody>

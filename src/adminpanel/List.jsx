@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Header from './Header';
-import { Container, Row, Col, Button, Table, Modal, Dropdown, Form, Nav } from 'react-bootstrap';
+import { Container, Row, Col, Button, Table, Modal, Dropdown, Form, Spinner, Alert } from 'react-bootstrap';
 import Sidebar from './sidebar';
 import axios from 'axios';
 import { FaTrashAlt, FaEdit, FaEye, FaEllipsisV } from 'react-icons/fa';
@@ -8,36 +8,68 @@ import { useNavigate } from 'react-router-dom';
 
 const List = () => {
   const [items, setItems] = useState([]);
+  const [filteredItems, setFilteredItems] = useState([]);
   const [showImageModal, setShowImageModal] = useState(false);
-  const [showEditModal, setShowEditModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-  const [selectedItem, setSelectedItem] = useState(null);
-  const navigate = useNavigate(); 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [loading, setLoading] = useState(false); // Added loading state
+  const [loadingMessage, setLoadingMessage] = useState('');
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchItems = async () => {
+      setLoading(true);
+      setLoadingMessage('Loading items...');
       try {
         const response = await axios.get('http://localhost:4000/api/items');
-        setItems([...response.data[0], ...response.data[1], ...response.data[2], ...response.data[3], ...response.data[4]]);
+        const allItems = [...response.data[0], ...response.data[1], ...response.data[2], ...response.data[3], ...response.data[4], ...response.data[5]];
+        setItems(allItems);
+        setFilteredItems(allItems);
+        setLoadingMessage('');
       } catch (error) {
         console.error('Error fetching items:', error);
+        setLoadingMessage('Error fetching items.');
+      } finally {
+        setLoading(false);
       }
     };
     fetchItems();
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      await axios.delete(`http://localhost:4000/api/items/${id}`);
-      setItems(items.filter(item => item._id !== id));
-    } catch (error) {
-      console.error('Error deleting item:', error);
+  const handleSearch = (e) => {
+    const query = e.target.value.toLowerCase();
+    setSearchQuery(query);
+
+    if (query) {
+      const filtered = items.filter(item =>
+        item.Title.toLowerCase().includes(query)
+      );
+      setFilteredItems(filtered);
+    } else {
+      setFilteredItems(items);
     }
   };
 
-  const handleEdit = (item) => {
-    setSelectedItem(item);
-    setShowEditModal(true);
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this item?')) {
+      setLoading(true);
+      setLoadingMessage('Deleting item...');
+      try {
+        await axios.delete(`http://localhost:4000/api/items/${id}`);
+        setItems(items.filter(item => item._id !== id));
+        setFilteredItems(filteredItems.filter(item => item._id !== id));
+      } catch (error) {
+        console.error('Error deleting item:', error);
+        setLoadingMessage('Error deleting item.');
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleEdit = async (item) => {
+    localStorage.setItem('Edit', item._id);
+    navigate('/product-listing');
   };
 
   const handleViewImage = (image) => {
@@ -45,21 +77,8 @@ const List = () => {
     setShowImageModal(true);
   };
 
-  const handleEditSave = async () => {
-    try {
-      await axios.put(`http://localhost:4000/api/items/${selectedItem._id}`, selectedItem);
-      setItems(items.map(item => (item._id === selectedItem._id ? selectedItem : item)));
-      setShowEditModal(false);
-    } catch (error) {
-      console.error('Error updating item:', error);
-    }
-  };
-
-  const handleInputChange = (e) => {
-    setSelectedItem({ ...selectedItem, [e.target.name]: e.target.value });
-  };
-
   const handleSetProduct = () => {
+    localStorage.removeItem('Edit');
     navigate('/product-listing');
   };
 
@@ -71,7 +90,22 @@ const List = () => {
           <Sidebar />
           <Col md={10} className="main-con mt-5">
             <h2>Product List</h2>
-            <Button variant="primary" onClick={handleSetProduct} className="mb-3">Add Product</Button> 
+            <Form.Control
+              type="text"
+              placeholder="Search for a product"
+              value={searchQuery}
+              onChange={handleSearch}
+              className="mb-3"
+            />
+            <Button variant="primary" onClick={handleSetProduct} className="mb-3">Add Product</Button>
+            {loading && (
+              <div className="text-center mb-3">
+                <Spinner animation="border" role="status">
+                  <span className="visually-hidden">Loading...</span>
+                </Spinner>
+                <p>{loadingMessage}</p>
+              </div>
+            )}
             <Table striped bordered hover>
               <thead>
                 <tr>
@@ -82,8 +116,8 @@ const List = () => {
                 </tr>
               </thead>
               <tbody>
-                {items.length > 0 ? (
-                  items.map(item => (
+                {filteredItems.length > 0 ? (
+                  filteredItems.map(item => (
                     <tr key={item._id}>
                       <td>
                         <img
@@ -132,55 +166,6 @@ const List = () => {
         </Modal.Header>
         <Modal.Body>
           <img src={selectedImage} alt="Product" style={{ width: '100%', height: 'auto' }} />
-        </Modal.Body>
-      </Modal>
-
-      <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Item</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedItem && (
-            <Form>
-              <Form.Group controlId="formTitle">
-                <Form.Label>Title</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="Title"
-                  value={selectedItem.Title || ''}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group controlId="formPrice">
-                <Form.Label>Price</Form.Label>
-                <Form.Control
-                  type="number"
-                  name="Price"
-                  value={selectedItem.Price || ''}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group controlId="formImage">
-                <Form.Label>Image</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="image"
-                  value={selectedItem.image[0]?.img_1 || ''}
-                  onChange={(e) => setSelectedItem({
-                    ...selectedItem,
-                    image: [{ img_1: e.target.value }]
-                  })}
-                />
-              </Form.Group>
-
-              <Button variant="primary" onClick={handleEditSave}>
-                Save Changes
-              </Button>
-            </Form>
-          )}
-          <Nav.Link href="/product-listing">Products</Nav.Link>
         </Modal.Body>
       </Modal>
     </div>

@@ -18,6 +18,7 @@ import Addcart from './viewflie/Add_to_cart';
 import AdProduct from './adminpanel/adproduct';
 import List from './adminpanel/List'
 import Product from './adminpanel/product';
+import Report from './adminpanel/Report';
 const Error = () => {
     return <h1>404 Error</h1>;
 }
@@ -38,6 +39,7 @@ const App = () => {
 
                 <Route path='/Payment' element={<Payment />} />
                 <Route path="/footer" element={<Footer />} />
+                <Route path="/report" element={<Report />}/>
                 <Route path="/Buy/:num" element={<Buypage />} />
                 <Route path="/Email" element={<Email />} />
                 <Route path="/Addcart" element={<Addcart/>} />

@@ -35,7 +35,7 @@ const Header = () => {
                     &nbsp;
                     {isLoggedIn && (
                         <p id="welcome" className="welcome-message text-white mb-0">
-                            Welcome, <span className="user-name text-warning">{Name}</span>
+                            Welcome, <span className="user-name text-black">{Name}</span>
                         </p>
                     )}
                 </div>

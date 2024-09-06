@@ -5,12 +5,11 @@ export default class sidebar extends Component {
       render() {
             return (
                   <Col md={2} className="sidebar">
-                        <h4 className='text-color'>Dashboard Menu</h4>
+                        <h4 className='text-color' style={{marginTop:'7rem'}}>Dashboard Menu</h4>
                         <Nav className="flex-column">
                               <Nav.Link href="/adProduct">Home</Nav.Link>
                               <Nav.Link href="/Product-List">Product-List</Nav.Link>
-                              <Nav.Link href="#users">Users</Nav.Link>
-                              <Nav.Link href="#settings">Settings</Nav.Link>
+                              <Nav.Link href="/Report">Report</Nav.Link>
                         </Nav>
                   </Col>
             )

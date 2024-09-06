@@ -168,6 +168,9 @@ const Footer = (props) => {
                         {product}
                       </NavLink>
                     ))}
+                    {/* <div className="custom-footer-nav-item-report">
+                    <NavLink to="/report">Report</NavLink>
+                    </div> */}
                 </div>
               </li>
             </ul>

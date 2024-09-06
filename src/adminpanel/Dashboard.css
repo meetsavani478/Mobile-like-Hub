@@ -2,8 +2,8 @@
       position: sticky;
       top: 0;
       background-color: azure;
-      padding: 20px;
-      height: 100vh;
+      padding: 30px;
+      height: auto;
       overflow-y: auto;
       color: black;
       animation: slideIn 0.5s ease-out;

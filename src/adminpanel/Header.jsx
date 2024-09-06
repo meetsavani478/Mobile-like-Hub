@@ -1,28 +1,62 @@
-import { Container, Row, Col, Card, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import React, { Component } from 'react'
+import React, { useEffect, useState } from "react";
+import { NavLink } from 'react-router-dom';
+import '../adminpanel/Header.css';
+import { useNavigate } from 'react-router-dom';
+import image_url from "../node/uploads/Mesa_de_trabajo_1-100-removebg-preview.png";
+import 'bootstrap/dist/css/bootstrap.min.css';
+const Header = () => {
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [Name, setName] = useState('');
+    const path = useNavigate();
+    const id = localStorage.getItem('userId');
+    const token = localStorage.getItem('token');
 
-export default class Header extends Component {
-  render() {
+    useEffect(() => {
+        if (token) {
+            setIsLoggedIn(true);
+        } else {
+            setIsLoggedIn(false);
+        }
+        setName(localStorage.getItem('user_Name'));
+    }, [id, token]);
+
+    const toggleMenu = () => {
+        const menuList = document.querySelector('.menu-list');
+        if (menuList) {
+            menuList.classList.toggle('show');
+        }
+    };
+
     return (
-      
-        <Navbar bg="dark" variant="dark" expand="lg">
-                <Container>
-                    <Navbar.Brand href="#home">Mobile-Like-Hub</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="mr-auto">
-                            <Nav.Link href="/adProduct">Home</Nav.Link>
-                            <Nav.Link href="/Product-List">Product-List</Nav.Link>
-                            <Nav.Link href="#users">Users</Nav.Link>
-                            <NavDropdown title="Settings" id="basic-nav-dropdown">
-                                <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-                                <NavDropdown.Item href="#action/3.3">Something else here</NavDropdown.Item>
-                            </NavDropdown>
-                        </Nav>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-    )
-  }
-}
+        <header>
+            <section className="title-1">
+                <div className="logo-1">
+                    <img src={image_url} className="image_url" alt="Logo" onClick={() => path("/adProduct")} />
+                </div>
+                <div className="logo">
+                    <ul className="menu-list">
+                            <>
+                                <li>
+                                    <div style={{ display: 'flex', gap: '5.5rem', justifyContent: 'center', alignItems: 'center' }}>
+                                        <NavLink to={`/adProduct`}>Home</NavLink>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div style={{ display: 'flex', gap: '2.5rem', justifyContent: 'center', alignItems: 'center' }}>
+                                        <NavLink to={`/Product-List`}>Product-List</NavLink>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div style={{ display: 'flex', gap: '2.5rem', justifyContent: 'center', alignItems: 'center' }}>
+                                        <NavLink to={`/Report`}>Report</NavLink>
+                                    </div>
+                                </li>
+                            </>
+                    </ul>
+                </div>
+            </section>
+        </header>
+    );
+};
+
+export default Header;

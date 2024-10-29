@@ -2,12 +2,16 @@ const express = require('express');
 const nodemailer = require("nodemailer");
 const router2 = new express.Router();
 const bodyParser = require('body-parser');
-
+const Razorpay = require('razorpay');
+const cron = require('node-cron');
 require('dotenv').config();
 require('./db/cun');
 const PhoneData = require('./db/Schema3');
 const User = require('./db/Schema4');
 const list = require('./db/Schema');
+const category = require('./db/Schema2');
+const Order = require('./db/orderSchema');
+const Cart = require('./db/cart');
 
 router2.use(express.json());
 router2.use(express.urlencoded({ extended: true }));
@@ -149,7 +153,7 @@ router2.post('/api/items/:id', async (req, res) => {
 
     try {
         const updateResult = await PhoneData.updateMany(
-            { 
+            {
                 $or: categories.map(category => ({ [`${category}._id`]: id }))
             },
             { $set: updateFields },
@@ -169,6 +173,139 @@ router2.post('/api/items/:id', async (req, res) => {
         res.status(500).send({ message: 'Server error' });
     }
 });
+
+const razorpay = new Razorpay({
+    key_id: 'rzp_test_Z1PlQFw9JxaYjN',
+    key_secret: 'xZ5Hs1BJAAGvl0aFDLCgRXpS',
+});
+
+router2.post('/createOrder', async (req, res) => {
+    const { amount, currency } = req.body;
+
+    const options = {
+        amount: Number(amount) * 100,
+        currency: currency || 'INR',
+        receipt: `receipt_order_${Date.now()}`,
+        payment_capture: 1,
+    };
+
+    try {
+        const response = await razorpay.orders.create(options);
+        res.json({
+            id: response.id,
+            currency: response.currency,
+            amount: response.amount,
+        });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send('Error creating Razorpay order');
+    }
+});
+
+
+router2.post('/order_product', async (req, res) => {
+    try {
+        const orderData = req.body;
+        const newOrder = new Order(orderData);
+        await newOrder.save();
+        res.status(201).json({ message: 'Order placed successfully!', order: newOrder });
+    } catch (error) {
+        console.error('Error placing order:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+});
+
+
+router2.get('/api/orders', async (req, res) => {
+    const orders = await Order.find();
+    res.json(orders);
+});
+
+
+router2.delete('/api/orders/:id', async (req, res) => {
+    const orderId = req.params.id;
+    await Order.findByIdAndDelete(orderId);
+    res.json({ message: 'Order deleted' });
+});
+
+router2.post('/confirm', async (req, res) => {
+    const { orderId, email } = req.body;
+    try {
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+
+        const transporter = nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
+            auth: {
+                user: 'mssavani99@gmail.com',
+                pass: 'mkugpmlfovbghdfg',
+            }
+        });
+
+        const mailOptions = {
+            from: 'mssavani99@gmail.com',
+            to: email,
+            subject: 'Order Confirmation',
+            text: `Hello Mr ${order.name} Your order for ${order.product_name} price:-${order.price} ${order.image} will be delivered today! Thank you for shopping with us.`,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return res.status(500).send('Error sending email: ' + error.toString());
+            } else {
+                return res.status(200).send('Email sent: ' + info.response);
+            }
+        });
+    } catch (error) {
+        res.status(500).send('Server error: ' + error.toString());
+    }
+});
+
+cron.schedule(' 00 06 * * *', async () => {
+    try {
+        const orders = await Order.find();
+        const currentTime = new Date().toLocaleDateString();
+
+        orders.forEach(item => {
+            const orderDate = new Date(item.order_date).toLocaleDateString();
+            if (currentTime === orderDate) {
+                const transporter = nodemailer.createTransport({
+                    host: 'smtp.gmail.com',
+                    port: 587,
+                    secure: false,
+                    auth: {
+                        user: 'mssavani99@gmail.com',
+                        pass: 'mkugpmlfovbghdfg',
+                    }
+                });
+
+                const mailOptions = {
+                    from: 'mssavani99@gmail.com',
+                    to: item.email,
+                    subject: 'Today Delivery',
+                    text: `Hello Mr ${item.name} Your order for ${item.product_name} price:-${item.price} ${item.image} will be delivered today! Thank you for shopping with us.`,
+                };
+
+                transporter.sendMail(mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error.toString());
+                    } else {
+                        console.log('Email sent successfully:', info.response);
+                    }
+                });
+            }
+        });
+    } catch (error) {
+        console.error('Error processing orders:', error.toString());
+    }
+});
+
 
 router2.get('/api/items/:id', async (req, res) => {
     const id = req.params.id;
@@ -191,7 +328,7 @@ router2.get('/api/items/:id', async (req, res) => {
         }
 
         let foundProduct = null;
-        for (const category of ['Iphone', 'Samsung', 'OnePlus', 'Vivo', 'Motorola','IQoo']) {
+        for (const category of ['Iphone', 'Samsung', 'OnePlus', 'Vivo', 'Motorola', 'IQoo']) {
             const productsArray = updateResult[category];
             if (productsArray) {
                 foundProduct = productsArray.find(product => product._id.toString() === id);
@@ -211,12 +348,12 @@ router2.get('/api/items/:id', async (req, res) => {
     }
 });
 
-  
+
 router2.delete('/api/items/:id', async (req, res) => {
     const id = req.params.id;
     try {
         const result = await PhoneData.updateOne(
-            { 
+            {
                 $or: [
                     { 'Iphone._id': id },
                     { 'Samsung._id': id },
@@ -224,23 +361,25 @@ router2.delete('/api/items/:id', async (req, res) => {
                     { 'Vivo._id': id },
                     { 'Motorola._id': id },
                     { 'IQoo._id': id }
-                
+
                 ]
             },
-            { $pull: {
-                Iphone: { _id: id },
-                Samsung: { _id: id },
-                OnePlus: { _id: id },
-                Vivo: { _id: id },
-                Motorola: { _id: id },
-                IQoo: { _id: id }
+            {
+                $pull: {
+                    Iphone: { _id: id },
+                    Samsung: { _id: id },
+                    OnePlus: { _id: id },
+                    Vivo: { _id: id },
+                    Motorola: { _id: id },
+                    IQoo: { _id: id }
 
-            } }
+                }
+            }
         );
         if (result.modifiedCount === 0) {
             return res.status(404).send({ message: 'Item not found' });
         }
-        
+
         res.json({ message: 'Item deleted successfully' });
     } catch (error) {
         console.error('Error deleting item:', error);
@@ -300,7 +439,6 @@ router2.get('/products/:id/:name', async (req, res) => {
     const name = req.params.name;
     try {
         const data = await PhoneData.findOne({ [`${name}.${id}`]: { $exists: true } });
-
         if (!data || !data[name] || !data[name][id]) {
             return res.status(404).send('Product not found');
         }
@@ -308,7 +446,8 @@ router2.get('/products/:id/:name', async (req, res) => {
         const total = data[name][id].Price;
         const discount = total * 7 / 100;
         const cost = total - discount;
-        res.json({ total, discount, cost });
+        const Title = data[name][id].Title;
+        res.json({ total, discount, cost, Title });
     } catch (error) {
         console.error('Error fetching the data:', error);
         res.status(500).send('Error fetching the data');
@@ -332,7 +471,7 @@ router2.get('/api/items', async (req, res) => {
         if (!data) {
             return res.status(404).json({ error: 'Item not found' });
         }
-        const Data = [data.Iphone, data.Samsung, data.OnePlus, data.Vivo, data.Motorola,data.IQoo];
+        const Data = [data.Iphone, data.Samsung, data.OnePlus, data.Vivo, data.Motorola, data.IQoo];
         // console.log(Data); 
         res.json(Data);
     } catch (error) {
@@ -341,28 +480,141 @@ router2.get('/api/items', async (req, res) => {
     }
 });
 
-
-router2.get('/addcart/:id/:name', async (req, res) => {
-    const id = req.params.id;
-    const name = req.params.name;
+router2.get('/api/categories', async (req, res) => {
     try {
-        const data = await PhoneData.findOne({ [`${name}.${id}`]: { $exists: true } });
-        if (!data || !data[name] || !data[name][id]) {
+        const data = [{ name: 'Apple' }, { name: 'Motorola' }, { name: 'OnePlus' }, { name: 'Samsung' }, { name: 'Vivo' }, { name: 'iQOO' }];
+        if (!data) {
+            return res.status(404).json({ error: 'Item not found' });
+        }
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching item:', error);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
+router2.post('/add_cart_product', async (req, res) => {
+    try {
+        const { name, id, user_id } = req.body;
+
+        const old_data = await PhoneData.findOne({ [`${name}.${id}`]: { $exists: true } });
+        if (!old_data || !old_data[name] || !old_data[name][id]) {
             return res.status(404).send('Product not found');
         }
-        // console.log(data[name][id])
+
         const item = {
-            id: id,
-            Title: data[name][id].Title,
-            price: data[name][id].Price,
+            index: id,
+            Product_name: old_data[name][id].Title,
+            price: old_data[name][id].Price,
             quantity: 1,
-            image: data[name][id].image[0].img_1 || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp'
+            image: old_data[name][id].image[0]?.img_1 || 'https://example.com/default-image.jpg'
         };
-        res.json([item]);
+
+        let userCart = await Cart.findOne({ User_id: user_id });
+
+        if (!userCart) {
+            userCart = new Cart({
+                User_id: user_id,
+                products: [item]
+            });
+        } else {
+            const existingProduct = userCart.products.find(product => String(product.Product_name) === String(old_data[name][id].Title));
+            if (existingProduct) {
+                existingProduct.quantity += 1;
+                existingProduct.price = existingProduct.price + parseFloat(old_data[name][id].Price);
+            } else {
+                userCart.products.push(item);
+            }
+        }
+        await userCart.save();
+        res.status(200).send('Product added to cart successfully');
+    } catch (error) {
+        console.error("Error:", error);
+        res.status(500).send('Server error');
+    }
+});
+
+router2.post('/updateCartQuantity', async (req, res) => {
+    const { user_id, product_id, quantity } = req.body;
+    try {
+        const cart = await Cart.findOne({ User_id: user_id });
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+        if (cart.products[product_id]) {
+            cart.products[product_id].quantity = Math.max(cart.products[product_id].quantity + quantity, 1);
+            await cart.save();
+            return res.status(200).json({ message: 'Quantity updated successfully', cart });
+        } else {
+            return res.status(404).json({ message: 'Item not found in cart' });
+        }
+    } catch (error) {
+        console.error('Error updating cart item quantity:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+router2.post('/removeCartItem', async (req, res) => {
+    const { user_id, product_id } = req.body;
+
+
+    try {
+        const cart = await Cart.findOne({ User_id: user_id });
+
+        if (!cart) {
+            return res.status(404).json({ message: 'Cart not found' });
+        }
+
+
+        if (cart.products[product_id]) {
+            const removedProduct = cart.products.splice(product_id, 1)[0];
+
+            cart.totalPrice -= removedProduct.price * removedProduct.quantity;
+
+            await cart.save();
+
+            return res.status(200).json({ message: 'Item removed from cart successfully', cart });
+        } else {
+            return res.status(404).json({ message: 'Item not found in cart' });
+        }
+    } catch (error) {
+        console.error('Error removing item from cart:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+router2.get('/addcart/:id', async (req, res) => {
+    const id = req.params.id;
+
+    try {
+
+        let data = await Cart.findOne({ User_id: id });
+        res.json([data]);
+
     } catch (error) {
         console.error('Error fetching the data:', error);
         res.status(500).send('Error fetching the data');
     }
 });
+
+// router2.get('/addcart/:id/:name', async (req, res) => {
+//     const id = req.params.id;
+//     const name = req.params.name;
+//     try {
+//         const data = await PhoneData.findOne({ [`${name}.${id}`]: { $exists: true } });
+//         if (!data || !data[name] || !data[name][id]) {
+//             return res.status(404).send('Product not found');
+//         }
+//         const item = {
+//             id: id,
+//             Title: data[name][id].Title,
+//             price: data[name][id].Price,
+//             quantity: 1,
+//             image: data[name][id].image[0].img_1 || 'https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-shopping-carts/img1.webp'
+//         };
+//         res.json([item]);
+//     } catch (error) {
+//         console.error('Error fetching the data:', error);
+//         res.status(500).send('Error fetching the data');
+//     }
+// });
 
 module.exports = router2;

@@ -19,6 +19,8 @@ import AdProduct from './adminpanel/adproduct';
 import List from './adminpanel/List'
 import Product from './adminpanel/product';
 import Report from './adminpanel/Report';
+import Order from './adminpanel/Orderpage';
+
 const Error = () => {
     return <h1>404 Error</h1>;
 }
@@ -50,6 +52,7 @@ const App = () => {
                 <Route path="/adProduct" element={<AdProduct />} />
                 <Route path="/Product-List" element={<List />} />
                 <Route path="/product-listing" element={<Product />} />
+                <Route path="/Order_List" element={<Order />} />
              
                 <Route path="*" element={<Error />} />
             </Routes>

@@ -15,7 +15,9 @@ const Footer = (props) => {
         try {
           const response = await fetch(`http://localhost:4000/user/${id}`);
           const apiData = await response.json();
+          
           setIsLoggedIn(true);
+
         } catch (error) {
           console.error("Error fetching user data:", error);
         }
@@ -50,7 +52,7 @@ const Footer = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+    
     try {
       const { name, email, subject, message } = formData;
       const response = await Axios.post(
@@ -68,7 +70,7 @@ const Footer = (props) => {
           },
         }
       );
-
+      
       const apiData = response.data;
       if (apiData) {
         alert("Your message has been sent!");
@@ -92,7 +94,10 @@ const Footer = (props) => {
       });
     }
   };
-
+  const condition = () =>{
+    localStorage.removeItem('token');
+    
+  }
   return (
     <>
       <footer className="custom-footer">
@@ -207,8 +212,8 @@ const Footer = (props) => {
               )}
               {isLoggedIn && (
                 <li>
-                  <div className="custom-footer-logged-in">
-                    <NavLink to={`/Login`}>
+                  <div className="custom-footer-logged-in" >
+                    <NavLink to={`/Login`} onClick={condition} >
                         Logout
                     </NavLink>
                   </div>

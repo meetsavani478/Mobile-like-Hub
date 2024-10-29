@@ -1,0 +1,7 @@
+.scrollable-table {
+      max-height: 950px; 
+      overflow-y: auto;  
+    }
+.scrollable-table::-webkit-scrollbar{
+      display: none; 
+    }

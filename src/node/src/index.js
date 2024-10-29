@@ -9,8 +9,9 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 
 app.use(cors({
-    origin:'http://localhost:3000'
+    origin:'*'
 }));
+
 app.use(bodyParser.json());
 app.use(router);
 app.use(router2);

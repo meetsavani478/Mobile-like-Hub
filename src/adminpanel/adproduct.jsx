@@ -6,7 +6,12 @@ import Profit from './Profit';
 import './Dashboard.css';
 import Header from './Header';
 import Sidebar from './sidebar';
+import { useNavigate } from 'react-router-dom';
 const Dashboard = () => {
+    const navigate = useNavigate();
+    const Order = ()=>{
+        navigate('/Order_List');
+    }
     return (
         <>
             <Header />
@@ -38,9 +43,9 @@ const Dashboard = () => {
                                             <Card.Text>$1,234,567</Card.Text>
                                         </Card.Body>
                                     </Card>
-                                    <Card className="mb-3">
+                                    <Card onClick={Order} type="button" className="mb-3" >
                                         <Card.Body>
-                                            <Card.Title>Order-list</Card.Title>
+                                            <Card.Title >Order-list</Card.Title>
                                             <Card.Text>999</Card.Text>
                                         </Card.Body>
                                     </Card>

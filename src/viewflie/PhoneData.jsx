@@ -19,6 +19,7 @@ const PhoneData = () => {
   localStorage.setItem('Phone_Details', name);
   localStorage.setItem('phone_Details_id', id);
 
+
   const fetchData = async () => {
     try {
       const response = await Axios.get(`http://localhost:4000/PhoneDataS/${name}/${id}`);
@@ -54,36 +55,12 @@ const PhoneData = () => {
   const navigate = useNavigate();
   const View_Cart = async () => {
     try {
-      const productResponse = await axios.get(`http://localhost:4000/addcart/${id}/${name}`);
-      const phone_data = productResponse.data;
-
-
-      const fetchedItems = phone_data.map(item => ({
-        id: item.id,
-        name: item.Title,
-        price: item.price,
-        quantity: item.quantity,
-        image: item.image
-      }));
-
-
-      const existingCartItems = JSON.parse(localStorage.getItem('cart_items')) || [];
-
-      const isExist = existingCartItems.find((item) => item.name === fetchedItems[0].name);
-      let updatedCartItems = [];
-      if (isExist) {
-        updatedCartItems =
-          existingCartItems.map((item) => {
-            if (isExist.name === item.name) {
-              return { ...item, quantity: item.quantity + 1 };
-            } else {
-              return item;
-            }
-          });
-      } else {
-        updatedCartItems = [fetchedItems[0], ...existingCartItems];
-      }
-      localStorage.setItem('cart_items', JSON.stringify(updatedCartItems));
+      const user_id=localStorage.getItem("userId");
+      await axios.post(`http://localhost:4000/add_cart_product`,{
+        name,
+        id,
+        user_id
+      });
       navigate(`/Addcart`);
     } catch (error) {
       console.error("Error fetching cart data:", error);
